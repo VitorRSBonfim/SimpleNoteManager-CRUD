@@ -4,13 +4,9 @@ import { useState } from "react"
 import { Link } from "expo-router"
 import { SQLiteProvider } from "expo-sqlite"
 import { database } from "../database/databaseInit"
-
-
+import { useProductDatabase }from "./funcsApp" 
 
 export default function App() {
-
-    const [idExport, setIdExport] = useState<number>();
-
     
     const DATA = [
         {
@@ -48,7 +44,8 @@ export default function App() {
                                 <Text style={styles.containerTaskTittle}>{item.id}<Text>asaa</Text></Text>
                                 <Text style={styles.containerTaskTittle}>{item.title}</Text>
                                 <View style={styles.containerBtnActions}>
-                                    <Text style={styles.btnActions} ><Link href="/tasks" onPress={() => {pressTrue(parseInt(item.id)), setIdExport(parseInt(item.id))}} >Editar</Link></Text>
+                                    
+                                    <Text style={styles.btnActions} ><Link href={{pathname: '/tasks', params: {id: 'item.id'}}} >Editar</Link></Text>
                                     <Text style={styles.btnActions}><Link href="/tasks" >Apagar</Link></Text>
                                 </View>
                             </View>
