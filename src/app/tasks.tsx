@@ -1,10 +1,19 @@
 import { StyleSheet } from "react-native"
 import { View, Text } from "react-native"
 
+import { useState } from "react";
+
+import { pre } from "./index"
+
+
 export default function Task() {
+
+    const [id, setId] = useState<number>();
+    console.log(pressTrue)
+
     return (
         <View style={styles.container}>
-            <Text>tAREFAS AQUI</Text>
+            <Text></Text>
         </View>
     )
 }

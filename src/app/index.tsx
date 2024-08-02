@@ -1,22 +1,28 @@
 import { StyleSheet, StatusBar, TextInput, FlatList, Button } from "react-native"
 import { View, Text } from "react-native"
+import { useState } from "react"
 import { Link } from "expo-router"
 import { SQLiteProvider } from "expo-sqlite"
 import { database } from "../database/databaseInit"
 
+
+
 export default function App() {
 
+    const [idExport, setIdExport] = useState<number>();
+
+    
     const DATA = [
         {
-          id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-          title: 'First Item',
+          id: '1',
+          title: 'First Item',  
         },
         {
-          id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+          id: '2',
           title: 'Second Item',
         },
         {
-          id: '58694a0f-3da1-471f-bd96-145571e29d72',
+          id: '3',
           title: 'Third Item',
         },
       ];
@@ -41,6 +47,10 @@ export default function App() {
                             <View style={styles.containerTaskCard} >
                                 <Text style={styles.containerTaskTittle}>{item.id}<Text>asaa</Text></Text>
                                 <Text style={styles.containerTaskTittle}>{item.title}</Text>
+                                <View style={styles.containerBtnActions}>
+                                    <Text style={styles.btnActions} ><Link href="/tasks" onPress={() => {pressTrue(parseInt(item.id)), setIdExport(parseInt(item.id))}} >Editar</Link></Text>
+                                    <Text style={styles.btnActions}><Link href="/tasks" >Apagar</Link></Text>
+                                </View>
                             </View>
                         </View>
                     }>
@@ -49,9 +59,12 @@ export default function App() {
                 </View>
             </View>  
         </SQLiteProvider>
-        
+     
+     
+     
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -82,8 +95,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         paddingTop: 10,
-        paddingBottom: 10,
-        marginTop: 20,
+        paddingBottom: 5,
+        marginTop: 5,
         
     },
     containerTaskCard: {
@@ -96,6 +109,17 @@ const styles = StyleSheet.create({
     containerTaskTittle: {
         color: "white",
         marginLeft: 2,
+    },
+    containerBtnActions: {
+        width: "90%",
+        flexDirection: "row",
+        marginLeft: 5,
+        marginTop: 5,
+    },
+    btnActions: {
+        color: "#2B2733",
+        fontSize: 14,
+        marginRight: 10
     }
 });
 
