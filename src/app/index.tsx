@@ -1,32 +1,64 @@
-import { StyleSheet, StatusBar, TextInput, FlatList, Button } from "react-native"
+import { StyleSheet, StatusBar, TextInput, FlatList, Button, Modal, KeyboardAvoidingView, Pressable} from "react-native"
 import { View, Text } from "react-native"
 import { useState } from "react"
 import { Link } from "expo-router"
-import { SQLiteProvider } from "expo-sqlite"
-import { database } from "../database/databaseInit"
-import { useProductDatabase }from "./funcsApp" 
 
-export default function App() {
+import { SQLiteDatabase } from "expo-sqlite"
+import { SQLiteProvider } from "expo-sqlite"
+import { initDb } from "../database/databaseInit"
+import { CRUD } from "../database/databaseCRUD"
+import { useSQLiteContext } from "expo-sqlite"
+
+
+export default function Index() {
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false)
+    const [noteName, setnoteName] = useState("ff")
+    const [noteDescription, setnoteDescription] = useState("fff")
+    const [noteText, setnoteText] = useState("ff")
+    const db = CRUD()
+
+    async function insertDb() {
+        const result = await db.insertnote()
+        console.log(result + "bbb")
+    }
     
-    const DATA = [
-        {
-          id: '1',
-          title: 'First Item',  
-        },
-        {
-          id: '2',
-          title: 'Second Item',
-        },
-        {
-          id: '3',
-          title: 'Third Item',
-        },
-      ];
-    console.log(DATA[0])
+    const DATA = [{id: '1',title: 'First Item',  }];
 
     return (
-        
-        <SQLiteProvider databaseName="tasks" onInit={database}>
+ 
+       
+            
+            <View style={styles.container}>
+            <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.containerModalContent}>
+                    <View style={styles.containerModal} >
+                        <View style={{justifyContent: "flex-start", alignItems: "flex-start", marginRight: 10, marginTop: 5, flexDirection: "row",}} >
+                            <Button onPress={insertDb} title="Salvar">
+                            </Button>
+                            <Button onPress={() => setModalVisible(false)}  title="Cancelar">
+                            </Button>
+                        </View>
+                        <View style={styles.containernoteInput}>
+            
+                            <TextInput multiline={true} style={{fontSize: 40}} placeholder="Note Name"onChangeText={setnoteName} value={noteName} maxLength={20} >
+                            </TextInput>
+                            <TextInput placeholder="note Description" onChangeText={setnoteDescription} value={noteDescription} maxLength={50} >
+                            </TextInput>
+                            <TextInput  multiline={true} placeholder="note" onChangeText={setnoteText} value={noteText} maxLength={250} >
+                            </TextInput>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            
             <View style={styles.container}>
                 <View style={styles.containerView1}>
                     <Text style={styles.containerView1Txt}>
@@ -38,24 +70,31 @@ export default function App() {
                     <FlatList
                     data={DATA}
                     keyExtractor={item => item.id}
-                    renderItem={({item}) => 
-                        <View style={styles.containerTask}>
-                            <View style={styles.containerTaskCard} >
-                                <Text style={styles.containerTaskTittle}>{item.id}<Text>asaa</Text></Text>
-                                <Text style={styles.containerTaskTittle}>{item.title}</Text>
+                    renderItem={({item}) =>
+                        <View style={styles.containernote}>
+                            <View style={styles.containernoteCard} >
+                                <Text style={styles.containernoteTittle}>{item.id}<Text>asaa</Text></Text>
+                                <Text style={styles.containernoteTittle}>{item.title}</Text>
                                 <View style={styles.containerBtnActions}>
-                                    
-                                    <Text style={styles.btnActions} ><Link href={{pathname: '/tasks', params: {id: 'item.id'}}} >Editar</Link></Text>
-                                    <Text style={styles.btnActions}><Link href="/tasks" >Apagar</Link></Text>
+            
+                                    <Text style={styles.btnActions} ><Link href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
+                                    <Text style={styles.btnActions}><Link href="/notes" >Apagar</Link></Text>
                                 </View>
                             </View>
                         </View>
                     }>
-
                     </FlatList>
                 </View>
-            </View>  
-        </SQLiteProvider>
+                <View style={styles.containerBtn}><Button title="NEWnote" onPress={() => setModalVisible(true)}></Button>
+                
+                </View>
+                <Button title="TST" onPress={insertDb}  ></Button>
+            </View>
+        </View>
+       
+        
+        
+    
      
      
      
@@ -66,7 +105,7 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#7A4ED9",
+        backgroundColor: "#7A4ED9"
     }, 
     containerView1: {
         paddingTop: 20,
@@ -88,7 +127,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         
     },
-    containerTask: {
+    containernote: {
         alignItems: "center",
         width: "100%",
         paddingTop: 10,
@@ -96,14 +135,14 @@ const styles = StyleSheet.create({
         marginTop: 5,
         
     },
-    containerTaskCard: {
+    containernoteCard: {
         width: "90%",
         backgroundColor: "#7A4ED9",
         paddingTop: 20,
         paddingBottom: 20,
         borderRadius: 20
     },
-    containerTaskTittle: {
+    containernoteTittle: {
         color: "white",
         marginLeft: 2,
     },
@@ -117,9 +156,34 @@ const styles = StyleSheet.create({
         color: "#2B2733",
         fontSize: 14,
         marginRight: 10
+    },
+    containerBtn: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+        paddingBottom: 30,
+        paddingTop: 5
+    },
+    containerModalContent: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+     
+    },
+    containerModal: {
+        
+        backgroundColor: "white",
+        width: "100%",
+        height: "100%"
+    },
+    containernoteInput: {
+        marginLeft: 30,
+        marginTop: 30,
+        marginRight: 30
     }
 });
 
 /* iMPORTANT  */
 
-// <Link href="/tasks" >TASKS</Link>
+// <Link href="/notes" >noteS</Link>
