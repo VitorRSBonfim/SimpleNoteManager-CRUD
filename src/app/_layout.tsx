@@ -5,7 +5,7 @@ import { initDb } from "../database/databaseInit"
 
 export default function Layout() {
   return (
-    <SQLiteProvider databaseName="notes" onInit={initDb}>
+    <SQLiteProvider databaseName="notes.db" onInit={initDb}>
       <Slot />
     </SQLiteProvider>
   )

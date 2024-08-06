@@ -1,26 +1,41 @@
-import { StyleSheet, StatusBar, TextInput, FlatList, Button, Modal, KeyboardAvoidingView, Pressable} from "react-native"
+import { StyleSheet, StatusBar, TextInput, FlatList, Button, Modal, KeyboardAvoidingView, Pressable, Touchable} from "react-native"
 import { View, Text } from "react-native"
 import { useState } from "react"
 import { Link } from "expo-router"
+import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
 
-import { SQLiteDatabase } from "expo-sqlite"
-import { SQLiteProvider } from "expo-sqlite"
-import { initDb } from "../database/databaseInit"
-import { CRUD } from "../database/databaseCRUD"
-import { useSQLiteContext } from "expo-sqlite"
 
 
 export default function Index() {
 
     const [modalVisible, setModalVisible] = useState<boolean>(false)
-    const [noteName, setnoteName] = useState("ff")
-    const [noteDescription, setnoteDescription] = useState("fff")
-    const [noteText, setnoteText] = useState("ff")
+    const [noteName, setnoteName] = useState("")
+    const [noteDescription, setnoteDescription] = useState("")
+    const [noteText, setnoteText] = useState("")
+    const [dataNotes, setDataNotes] = useState<dataNotesType[] | undefined>([])
     const db = CRUD()
 
+
     async function insertDb() {
-        const result = await db.insertnote()
-        console.log(result + "bbb")
+        const result = await db.insertnote({noteName, noteText, noteDescription})
+        console.log(result?.insertedRowId)
+        searchNotes()
+    }
+
+    async function searchNotes() {
+        try {
+            const response = await db.searchNote()
+            setDataNotes(response)
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+    async function deleteNote(id: number) {
+        const response = await db.deleteNote(id)
     }
     
     const DATA = [{id: '1',title: 'First Item',  }];
@@ -68,17 +83,17 @@ export default function Index() {
                 </View>
                 <View style={styles.containerView2}>
                     <FlatList
-                    data={DATA}
-                    keyExtractor={item => item.id}
+                    data={dataNotes}
+                    keyExtractor={item => String(item.ID_Task)}
                     renderItem={({item}) =>
                         <View style={styles.containernote}>
                             <View style={styles.containernoteCard} >
-                                <Text style={styles.containernoteTittle}>{item.id}<Text>asaa</Text></Text>
-                                <Text style={styles.containernoteTittle}>{item.title}</Text>
+                                <Text style={styles.containernoteTittle}>{item.taskName}<Text>asaa</Text></Text>
+                                <Text style={styles.containernoteTittle}>{item.taskDescription}</Text>
                                 <View style={styles.containerBtnActions}>
             
                                     <Text style={styles.btnActions} ><Link href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
-                                    <Text style={styles.btnActions}><Link href="/notes" >Apagar</Link></Text>
+                                    <Text onPress={() => {deleteNote(item.ID_Task)}} style={styles.btnActions}>DELETE</Text>
                                 </View>
                             </View>
                         </View>
@@ -88,16 +103,10 @@ export default function Index() {
                 <View style={styles.containerBtn}><Button title="NEWnote" onPress={() => setModalVisible(true)}></Button>
                 
                 </View>
-                <Button title="TST" onPress={insertDb}  ></Button>
+
             </View>
         </View>
        
-        
-        
-    
-     
-     
-     
     )
 }
 
@@ -114,12 +123,13 @@ const styles = StyleSheet.create({
     },
     containerView1Txt: {
         color: "white",
-        textAlign: "center"
+        textAlign: "center",
+        paddingTop: 10
     },
     containerView2: {
         flex: 1,
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingTop: 5,
+        
         width: "100%",
         backgroundColor: "white",
         height: "100%",
@@ -161,9 +171,9 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
-        paddingBottom: 30,
-        paddingTop: 5
+        backgroundColor: "red",
+        paddingBottom: 10
+    
     },
     containerModalContent: {
         flex: 1,
