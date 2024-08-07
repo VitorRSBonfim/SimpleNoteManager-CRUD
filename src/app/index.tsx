@@ -143,7 +143,7 @@ export default function Index() {
                                 <View style={styles.containerBtnActions}>
             
                                     <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} ><FontAwesomeIcon name="edit" size={20} color={"white"} ></FontAwesomeIcon></Link></Text>
-                                    <Text><Feather name="trash" size={20} color={"white"}></Feather></Text>
+                                    <Text onPress={() => {deleteNote(item.id)}}><Feather name="trash" size={20} color={"white"}></Feather></Text>
                                 </View>
                             </View>
                         </View>

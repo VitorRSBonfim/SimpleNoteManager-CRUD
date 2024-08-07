@@ -54,7 +54,7 @@ export default function Note() {
             <View style={styles.containterView2}>
                 <View style={styles.containerHeader}>
                     <Text style={styles.textContent}> <Link href={{pathname: ".."}} ><FontAwesomeIcon name="check" size={26}></FontAwesomeIcon></Link></Text>
-                    <Text onPress={updateNote} style={styles.textContent} ><FontAwesomeIcon name="close" size={26}></FontAwesomeIcon></Text>
+                    <Text onPress={updateNote} style={styles.textContent}  > <Link href={{pathname: ".."}}><FontAwesomeIcon name="close" size={26}></FontAwesomeIcon></Link> </Text>
                 </View>
             </View>
             <View style={styles.containerEditContent}>
