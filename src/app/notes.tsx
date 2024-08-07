@@ -6,13 +6,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CRUD } from "../database/databaseCRUD";
+import FontAwesomeIcon from 'react-native-vector-icons/AntDesign'
 
 export default function Note() {
 
     const db = CRUD()
     const [idTemp, setIdTemp] = useState<number>()
     const [tittleNote, setTittleNote] = useState<string>("")
-    const [descriptionNote, setDescriptionNote] = useState<string>("")
     const [textNote, setTextNote] = useState<string>("")
 
     console.log()
@@ -25,7 +25,6 @@ export default function Note() {
             console.log(result)
             if (result != null) {
                 setTittleNote(result[0].noteName)
-                setDescriptionNote(result[0].noteDescription)
                 setTextNote(result[0].noteText)
             }
         } catch (error) {
@@ -37,7 +36,7 @@ export default function Note() {
 
     async function updateNote() {
         try {
-            const result = await db.updateNote(tittleNote, descriptionNote, textNote)
+            const result = await db.updateNote(tittleNote, textNote)
         } catch (error) {
             console.log(error)
         }
@@ -54,13 +53,12 @@ export default function Note() {
         <View style={styles.container}>
             <View style={styles.containterView2}>
                 <View style={styles.containerHeader}>
-                    <Text style={styles.textContent}> <Link href={{pathname: ".."}} >VoltarIcon</Link></Text>
-                    <Text onPress={updateNote} style={styles.textContent} >Slavar icon</Text>
+                    <Text style={styles.textContent}> <Link href={{pathname: ".."}} ><FontAwesomeIcon name="check" size={26}></FontAwesomeIcon></Link></Text>
+                    <Text onPress={updateNote} style={styles.textContent} ><FontAwesomeIcon name="close" size={26}></FontAwesomeIcon></Text>
                 </View>
             </View>
             <View style={styles.containerEditContent}>
                 <TextInput style={styles.inputTextTittle} multiline={true} maxLength={20} onChangeText={setTittleNote} value={tittleNote}></TextInput>
-                <TextInput style={styles.inputDescription} multiline={true} maxLength={20} onChangeText={setDescriptionNote} value={descriptionNote}></TextInput>
                 <TextInput style={styles.inputText} multiline={true} maxLength={240} onChangeText={setTextNote} value={textNote}></TextInput>
 
             </View>
@@ -75,14 +73,17 @@ const styles = StyleSheet.create({
     },
     containterView2: {
         width: "100%",
-        paddingTop: 20,
-        paddingBottom: 20,
-        
-        backgroundColor: "#7A4ED9",
+        paddingTop: 10,
+        backgroundColor: "#7A4ED9"
         
     },
     containerHeader: {
        paddingLeft: 10,
+       paddingTop: 10,
+       paddingBottom: 10,
+       paddingRight: 10,
+       justifyContent: "space-between", 
+       alignItems: "flex-start",
        flexDirection: "row"
     },
     headerTextContent: {
@@ -102,11 +103,6 @@ const styles = StyleSheet.create({
     },
     inputTextTittle: {
         color: "#7A4ED9", fontSize: 40
-    },
-    inputDescription: {
-        color: "black",
-        marginTop: -10, 
-        marginLeft: 5
     },
     inputText: {
         fontSize: 20,

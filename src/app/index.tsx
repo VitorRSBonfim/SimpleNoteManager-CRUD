@@ -5,12 +5,12 @@ import { Link } from "expo-router"
 import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import FontAwesomeIcon from 'react-native-vector-icons/AntDesign'
+import { Feather } from "@expo/vector-icons"
 
 export default function Index() {
 
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [noteName, setnoteName] = useState("")
-    const [noteDescription, setnoteDescription] = useState("")
     const [noteText, setnoteText] = useState("")
     const [dataNotes, setDataNotes] = useState<dataNotesType[] | undefined>([])
     const [searchVal, setSearchVal] = useState("")
@@ -19,11 +19,11 @@ export default function Index() {
 
 
     async function insertDb() {
-        const result = await db.insertnote({noteName, noteText, noteDescription})
+        const result = await db.insertnote({noteName, noteText})
         console.log(result?.insertedRowId)
         setnoteName("")
         setnoteText("")
-        setnoteDescription("")
+      
         searchNotes()
         setModalVisible(false)
     }
@@ -33,7 +33,7 @@ export default function Index() {
             const response = await db.searchNote()
             setDataNotes(response)
             if ( response != null ) {
-                 console.log(response[0].noteName)
+                 console.log(response[0].noteName, response[0].noteText)
             }
            
         } catch (error) {
@@ -99,17 +99,17 @@ export default function Index() {
             >
                 <View style={styles.containerModalContent}>
                     <View style={styles.containerModal} >
-                        <View style={{justifyContent: "flex-start", alignItems: "flex-start", marginRight: 10, marginTop: 5, flexDirection: "row",}} >
-                            <Button onPress={insertDb} title="Salvar">
-                            </Button>
-                            <Button onPress={() => setModalVisible(false)}  title="Cancelar">
-                            </Button>
+                        <View style={{justifyContent: "space-between", alignItems: "flex-start",flexDirection: "row", backgroundColor: "#7A4ED9", paddingTop: 10, paddingLeft: 10, paddingRight: 10, paddingBottom: 10}} >
+                            <Text onPress={insertDb}>
+                                <FontAwesomeIcon name="check" size={26} color={"white"}></FontAwesomeIcon>
+                            </Text>
+                            <Text onPress={() => {setModalVisible(false)}}>
+                                <FontAwesomeIcon name="close" size={26} color={"white"}></FontAwesomeIcon>
+                            </Text>
                         </View>
                         <View style={styles.containernoteInput}>
             
-                            <TextInput multiline={true} style={{fontSize: 40}} placeholder="Note Name "onChangeText={setnoteName} value={noteName} maxLength={20} >
-                            </TextInput>
-                            <TextInput placeholder="note Description" onChangeText={setnoteDescription} value={noteDescription} maxLength={50} >
+                            <TextInput multiline={true} style={{fontSize: 40}} placeholder="Note Name "onChangeText={setnoteName} value={noteName} maxLength={30} >
                             </TextInput>
                             <TextInput  multiline={true} placeholder="note" onChangeText={setnoteText} value={noteText} maxLength={250} >
                             </TextInput>
@@ -127,7 +127,7 @@ export default function Index() {
                 </View>
                 <View style={styles.containerView2}>
                     <View style={styles.containerSearch}>
-                        <Text style={{}} onPress={() => setModalVisible(true)}><FontAwesomeIcon name="plus" size={24}></FontAwesomeIcon></Text>
+                        <Text onPress={() => setModalVisible(true)}><FontAwesomeIcon  name="plus" size={26}></FontAwesomeIcon></Text>
 
                         <TextInput onChangeText={setSearchVal} value={searchVal} style={styles.inputSearch} placeholder="Search"></TextInput>
                         
@@ -139,11 +139,11 @@ export default function Index() {
                         <View style={styles.containernote}>
                             <View style={styles.containernoteCard} >
                                 <Text style={styles.containernoteTittle}>{item.noteName}<Text></Text></Text>
-                                <Text style={styles.containernoteTittle}>{item.noteDescription}</Text>
+                                <Text style={styles.containernoteText}>{item.noteText}<Text></Text></Text>
                                 <View style={styles.containerBtnActions}>
             
-                                    <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
-                                    <Button onPress={() => {deleteNote(item.id)}}  title="delte"></Button>
+                                    <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} ><FontAwesomeIcon name="edit" size={20} color={"white"} ></FontAwesomeIcon></Link></Text>
+                                    <Text><Feather name="trash" size={20} color={"white"}></Feather></Text>
                                 </View>
                             </View>
                         </View>
@@ -206,7 +206,15 @@ const styles = StyleSheet.create({
     },
     containernoteTittle: {
         color: "white",
-        marginLeft: 2,
+        marginLeft: 10,
+        marginRight: 10,
+        fontSize: 22
+    },
+    containernoteText: {
+        marginLeft: 10,
+        marginRight: 10,
+        color: "white",
+        fontSize: 14
     },
     containerBtnActions: {
         width: "90%",
@@ -241,7 +249,7 @@ const styles = StyleSheet.create({
     },
     containernoteInput: {
         marginLeft: 30,
-        marginTop: 30,
+        marginTop: 10,
         marginRight: 30
     },
     containerSearch: {
