@@ -8,10 +8,10 @@ export type notesType = {
 
 export 
 type dataNotesType = {
-    "ID_Task": number
-    "taskDescription": string
-    "taskName": string
-    "taskText": string
+    "id": number
+    "noteDescription": string
+    "noteName": string
+    "noteText": string
 }
 
 export function CRUD() {
@@ -20,7 +20,7 @@ export function CRUD() {
     async function insertnote(data: notesType) {
 
 
-        const statement = await database.prepareAsync(`INSERT INTO notes (taskName, taskText, taskDescription) values ($noteName, $noteText, $noteDescription)`)
+        const statement = await database.prepareAsync(`INSERT INTO note (noteName, noteText, noteDescription) values ($noteName, $noteText, $noteDescription)`)
         try {
             
             let result = await statement.executeAsync({$noteName: data.noteName, $noteText: data.noteText, $noteDescription: data.noteDescription})
@@ -29,13 +29,13 @@ export function CRUD() {
             return { insertedRowId }
             
         } catch (error) {
-            console.log(error + "dasd")
+            console.log(error)
         } 
     }
 
     async function searchNote() {
         try {
-            const query = "SELECT * FROM notes "
+            const query = "SELECT * FROM note "
             const result = await database.getAllAsync<dataNotesType>(query)
             return result 
             console.log("Resultado da busca" + result)
@@ -45,7 +45,7 @@ export function CRUD() {
     }
 
     async function deleteNote(idNote: number) {
-        const statement = await database.prepareAsync(`DELETE FROM notes WHERE ID_Task = $ID_Task `)
+        const statement = await database.prepareAsync(`DELETE FROM note WHERE id = $ID_Task `)
 
         try {
             const result = await statement.executeAsync({$ID_Task: idNote})

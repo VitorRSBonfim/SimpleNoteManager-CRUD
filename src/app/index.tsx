@@ -1,11 +1,11 @@
 import { StyleSheet, StatusBar, TextInput, FlatList, Button, Modal, KeyboardAvoidingView, Pressable, Touchable} from "react-native"
 import { View, Text } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "expo-router"
+import { isLoaded } from "expo-font"
 import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
-
-
-
+import { AsyncStorageHook } from "@react-native-async-storage/async-storage/lib/typescript/types"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function Index() {
 
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -13,13 +13,19 @@ export default function Index() {
     const [noteDescription, setnoteDescription] = useState("")
     const [noteText, setnoteText] = useState("")
     const [dataNotes, setDataNotes] = useState<dataNotesType[] | undefined>([])
+    
+    
     const db = CRUD()
 
 
     async function insertDb() {
         const result = await db.insertnote({noteName, noteText, noteDescription})
         console.log(result?.insertedRowId)
+        setnoteName("")
+        setnoteText("")
+        setnoteDescription("")
         searchNotes()
+        setModalVisible(false)
     }
 
     async function searchNotes() {
@@ -33,9 +39,38 @@ export default function Index() {
     }
 
 
+    useEffect(() => {
+        // write your code here, it's like componentWillMount
+        searchNotes();
+    }, [])
+   
+    async function sendId(id: number) {
+        const idStr = String(id)
+        try {
+            await AsyncStorage.setItem(
+                '@SetId:id',
+                idStr
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getId() {
+        try {
+            const id = await AsyncStorage.getItem('@SetId:id')
+
+        if (id != null) {
+            console.log(id)
+        }
+        } catch (error) {
+            console.log(error)
+        }
+    }   
 
     async function deleteNote(id: number) {
         const response = await db.deleteNote(id)
+        searchNotes()
     }
     
     const DATA = [{id: '1',title: 'First Item',  }];
@@ -44,7 +79,7 @@ export default function Index() {
  
        
             
-            <View style={styles.container}>
+            <View style={styles.container} >
             <Modal
             animationType="slide"
             transparent={true}
@@ -63,7 +98,7 @@ export default function Index() {
                         </View>
                         <View style={styles.containernoteInput}>
             
-                            <TextInput multiline={true} style={{fontSize: 40}} placeholder="Note Name"onChangeText={setnoteName} value={noteName} maxLength={20} >
+                            <TextInput multiline={true} style={{fontSize: 40}} placeholder="Note Name "onChangeText={setnoteName} value={noteName} maxLength={20} >
                             </TextInput>
                             <TextInput placeholder="note Description" onChangeText={setnoteDescription} value={noteDescription} maxLength={50} >
                             </TextInput>
@@ -84,16 +119,16 @@ export default function Index() {
                 <View style={styles.containerView2}>
                     <FlatList
                     data={dataNotes}
-                    keyExtractor={item => String(item.ID_Task)}
+                    keyExtractor={item => String(item.id)}
                     renderItem={({item}) =>
                         <View style={styles.containernote}>
                             <View style={styles.containernoteCard} >
-                                <Text style={styles.containernoteTittle}>{item.taskName}<Text>asaa</Text></Text>
-                                <Text style={styles.containernoteTittle}>{item.taskDescription}</Text>
+                                <Text style={styles.containernoteTittle}>{item.noteName}<Text></Text></Text>
+                                <Text style={styles.containernoteTittle}>{item.noteDescription}</Text>
                                 <View style={styles.containerBtnActions}>
             
-                                    <Text style={styles.btnActions} ><Link href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
-                                    <Text onPress={() => {deleteNote(item.ID_Task)}} style={styles.btnActions}>DELETE</Text>
+                                    <Text onPress={() => {sendId(item.id)}} style={styles.btnActions} ><Link href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
+                                    <Text onPress={() => {deleteNote(item.id)}} style={styles.btnActions}>DELETE</Text>
                                 </View>
                             </View>
                         </View>
@@ -103,6 +138,9 @@ export default function Index() {
                 <View style={styles.containerBtn}><Button title="NEWnote" onPress={() => setModalVisible(true)}></Button>
                 
                 </View>
+
+                <Button onPress={() => sendId(4)} title="SendData"></Button>
+                <Button onPress={getId} title="GetData"></Button>
 
             </View>
         </View>
