@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {  useSQLiteContext } from "expo-sqlite";
 
 export type notesType = {
@@ -37,8 +38,8 @@ export function CRUD() {
         try {
             const query = "SELECT * FROM note "
             const result = await database.getAllAsync<dataNotesType>(query)
+            console.log("Resultado da busca" +  result)
             return result 
-            console.log("Resultado da busca" + result)
         } catch (error) {
             console.log(error)
         } 
@@ -58,6 +59,52 @@ export function CRUD() {
         }
     }
 
-    return { insertnote, searchNote, deleteNote}
+
+
+    async function getSelectedNote() {
+
+        const id = await AsyncStorage.getItem('@SetId:id')
+
+
+        try {
+            const query = "SELECT * FROM note WHERE id = $id "
+            const result = await database.getAllAsync<dataNotesType>(query, `${id}`)
+            console.log("Resultado da busca" +  result[0].id)
+            return result
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function updateNote(noteName: string, noteDescription: string, noteText: string) {
+
+        const id = await AsyncStorage.getItem('@SetId:id')
+
+        const statement = await database.prepareAsync(`UPDATE note SET noteName = $noteName, noteDescription = $noteDescription, noteText = $noteText WHERE id = $id`)
+        try {
+            const response = await statement.executeAsync({$id: id, $noteName: noteName, $noteDescription: noteDescription, $noteText: noteText })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function searchByName(noteName: string) {
+
+        try {
+            const query = "SELECT * FROM note WHERE noteName LIKE ?"
+      
+            const response = await database.getAllAsync(
+              query,
+              `%${noteName}%`
+            )
+      
+            return response
+          } catch (error) {
+            throw error
+          }
+
+    }
+
+    return { insertnote, searchNote, deleteNote, getSelectedNote, updateNote, searchByName}
 
 }

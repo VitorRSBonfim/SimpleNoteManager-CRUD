@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Link } from "expo-router"
 import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import FontAwesomeIcon from 'react-native-vector-icons/AntDesign'
+
 export default function Index() {
 
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -11,7 +13,7 @@ export default function Index() {
     const [noteDescription, setnoteDescription] = useState("")
     const [noteText, setnoteText] = useState("")
     const [dataNotes, setDataNotes] = useState<dataNotesType[] | undefined>([])
-    
+    const [searchVal, setSearchVal] = useState("")
     
     const db = CRUD()
 
@@ -30,7 +32,10 @@ export default function Index() {
         try {
             const response = await db.searchNote()
             setDataNotes(response)
-            console.log(response)
+            if ( response != null ) {
+                 console.log(response[0].noteName)
+            }
+           
         } catch (error) {
             console.log(error)
         }
@@ -54,7 +59,23 @@ export default function Index() {
         }
     }
 
-    
+    async function searchState() {
+        try {
+            if (searchVal != null) {
+                const response = await db.searchByName(searchVal)
+                setDataNotes(response)
+                console.log(response)
+                
+            } else {
+                searchNotes()
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {searchState()}, [searchVal])
 
     async function deleteNote(id: number) {
         const response = await db.deleteNote(id)
@@ -105,6 +126,12 @@ export default function Index() {
                     <StatusBar barStyle={"dark-content"} backgroundColor={"#7A4ED9"}/>
                 </View>
                 <View style={styles.containerView2}>
+                    <View style={styles.containerSearch}>
+                        <Text style={{}} onPress={() => setModalVisible(true)}><FontAwesomeIcon name="plus" size={24}></FontAwesomeIcon></Text>
+
+                        <TextInput onChangeText={setSearchVal} value={searchVal} style={styles.inputSearch} placeholder="Search"></TextInput>
+                        
+                    </View>
                     <FlatList
                     data={dataNotes}
                     keyExtractor={item => String(item.id)}
@@ -116,16 +143,18 @@ export default function Index() {
                                 <View style={styles.containerBtnActions}>
             
                                     <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
-                                    <Text onPress={() => {deleteNote(item.id)}} style={styles.btnActions}>DELETE</Text>
+                                    <Button onPress={() => {deleteNote(item.id)}}  title="delte"></Button>
                                 </View>
                             </View>
                         </View>
                     }>
+                        
                     </FlatList>
+                    
                 </View>
-                <View style={styles.containerBtn}><Button title="NEWnote" onPress={() => setModalVisible(true)}></Button>
+              
                 
-                </View>
+               
 
             </View>
         </View>
@@ -195,7 +224,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "red",
-        paddingBottom: 10
+
     
     },
     containerModalContent: {
@@ -214,6 +243,24 @@ const styles = StyleSheet.create({
         marginLeft: 30,
         marginTop: 30,
         marginRight: 30
+    },
+    containerSearch: {
+        marginRight: 20,
+        marginLeft: 20,
+        marginTop: 10,
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center"
+    },
+    inputSearch: {
+        borderWidth: .2,
+        borderColor: "#7A4ED9",
+        borderRadius: 10 ,
+        paddingLeft: 10,
+        width: "78%",
+        marginLeft: 10,
+        marginRight:10
     }
 });
 
