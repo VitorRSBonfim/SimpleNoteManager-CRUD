@@ -2,9 +2,7 @@ import { StyleSheet, StatusBar, TextInput, FlatList, Button, Modal, KeyboardAvoi
 import { View, Text } from "react-native"
 import { useEffect, useState } from "react"
 import { Link } from "expo-router"
-import { isLoaded } from "expo-font"
 import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
-import { AsyncStorageHook } from "@react-native-async-storage/async-storage/lib/typescript/types"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function Index() {
 
@@ -56,17 +54,7 @@ export default function Index() {
         }
     }
 
-    async function getId() {
-        try {
-            const id = await AsyncStorage.getItem('@SetId:id')
-
-        if (id != null) {
-            console.log(id)
-        }
-        } catch (error) {
-            console.log(error)
-        }
-    }   
+    
 
     async function deleteNote(id: number) {
         const response = await db.deleteNote(id)
@@ -79,7 +67,7 @@ export default function Index() {
  
        
             
-            <View style={styles.container} >
+            <View style={styles.container}  >
             <Modal
             animationType="slide"
             transparent={true}
@@ -127,7 +115,7 @@ export default function Index() {
                                 <Text style={styles.containernoteTittle}>{item.noteDescription}</Text>
                                 <View style={styles.containerBtnActions}>
             
-                                    <Text onPress={() => {sendId(item.id)}} style={styles.btnActions} ><Link href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
+                                    <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} >Editar</Link></Text>
                                     <Text onPress={() => {deleteNote(item.id)}} style={styles.btnActions}>DELETE</Text>
                                 </View>
                             </View>
@@ -138,9 +126,6 @@ export default function Index() {
                 <View style={styles.containerBtn}><Button title="NEWnote" onPress={() => setModalVisible(true)}></Button>
                 
                 </View>
-
-                <Button onPress={() => sendId(4)} title="SendData"></Button>
-                <Button onPress={getId} title="GetData"></Button>
 
             </View>
         </View>
@@ -235,3 +220,6 @@ const styles = StyleSheet.create({
 /* iMPORTANT  */
 
 // <Link href="/notes" >noteS</Link>
+
+// <Button onPress={() => sendId(4)} title="SendData"></Button>
+// <Button onPress={getId} title="GetData"></Button>
