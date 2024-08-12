@@ -1,6 +1,6 @@
 
 
-<h1>
+<h1 align="center">
   Simple Note Manager - React Native
 </h1>
 
