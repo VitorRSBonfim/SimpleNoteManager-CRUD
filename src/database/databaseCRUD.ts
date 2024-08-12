@@ -81,6 +81,7 @@ export function CRUD() {
         const statement = await database.prepareAsync(`UPDATE nota SET noteName = $noteName, noteText = $noteText WHERE id = $id`)
         try {
             const response = await statement.executeAsync({$id: id, $noteName: noteName, $noteText: noteText })
+            console.log(response)
         } catch (error) {
             console.log(error)
         }

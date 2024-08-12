@@ -12,8 +12,8 @@ export default function Note() {
 
     const db = CRUD()
     const [idTemp, setIdTemp] = useState<number>()
-    const [tittleNote, setTittleNote] = useState<string>("")
-    const [textNote, setTextNote] = useState<string>("")
+    const [tittleNote, setTittleNote] = useState("")
+    const [textNote, setTextNote] = useState("")
 
     console.log()
 
@@ -40,6 +40,10 @@ export default function Note() {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    if (tittleNote && textNote != "") {
+        updateNote()
     }
     
     useEffect(() => {

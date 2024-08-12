@@ -4,8 +4,11 @@ import { useEffect, useState } from "react"
 import { Link } from "expo-router"
 import { CRUD, notesType, dataNotesType } from "../database/databaseCRUD"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import FontAwesomeIcon from 'react-native-vector-icons/AntDesign'
+import { AntDesign, FontAwesome } from "@expo/vector-icons"
 import { Feather } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { SimpleLineIcons } from "@expo/vector-icons"
 
 export default function Index() {
 
@@ -101,10 +104,10 @@ export default function Index() {
                     <View style={styles.containerModal} >
                         <View style={{justifyContent: "space-between", alignItems: "flex-start",flexDirection: "row", backgroundColor: "#7A4ED9", paddingTop: 10, paddingLeft: 10, paddingRight: 10, paddingBottom: 10}} >
                             <Text onPress={insertDb}>
-                                <FontAwesomeIcon name="check" size={26} color={"white"}></FontAwesomeIcon>
+                                <FontAwesome name="check" size={26} color={"white"}></FontAwesome>
                             </Text>
                             <Text onPress={() => {setModalVisible(false)}}>
-                                <FontAwesomeIcon name="close" size={26} color={"white"}></FontAwesomeIcon>
+                                <FontAwesome name="close" size={26} color={"white"}></FontAwesome>
                             </Text>
                         </View>
                         <View style={styles.containernoteInput}>
@@ -121,13 +124,13 @@ export default function Index() {
             <View style={styles.container}>
                 <View style={styles.containerView1}>
                     <Text style={styles.containerView1Txt}>
-                        TO-DO
+                        NOTE
                     </Text>
                     <StatusBar barStyle={"dark-content"} backgroundColor={"#7A4ED9"}/>
                 </View>
                 <View style={styles.containerView2}>
                     <View style={styles.containerSearch}>
-                        <Text onPress={() => setModalVisible(true)}><FontAwesomeIcon  name="plus" size={26}></FontAwesomeIcon></Text>
+                        <Text onPress={() => setModalVisible(true)}><AntDesign  name="plus" size={26}></AntDesign></Text>
 
                         <TextInput onChangeText={setSearchVal} value={searchVal} style={styles.inputSearch} placeholder="Search"></TextInput>
                         
@@ -142,8 +145,8 @@ export default function Index() {
                                 <Text style={styles.containernoteText}>{item.noteText}<Text></Text></Text>
                                 <View style={styles.containerBtnActions}>
             
-                                    <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} ><FontAwesomeIcon name="edit" size={20} color={"white"} ></FontAwesomeIcon></Link></Text>
-                                    <Text onPress={() => {deleteNote(item.id)}}><Feather name="trash" size={20} color={"white"}></Feather></Text>
+                                    <Text style={styles.btnActions} ><Link  onPress={() => {sendId(item.id)}} href={{pathname: '/notes', params: {id: 'item.id'}}} ><FontAwesome name="pencil-square-o" size={20} color={"white"} ></FontAwesome></Link></Text>
+                                    <Text onPress={() => {deleteNote(item.id)}}><SimpleLineIcons name="trash" size={20} color={"white"}></SimpleLineIcons></Text>
                                 </View>
                             </View>
                         </View>
@@ -217,21 +220,25 @@ const styles = StyleSheet.create({
         fontSize: 14
     },
     containerBtnActions: {
-        width: "90%",
+        width: "100%",
         flexDirection: "row",
-        marginLeft: 5,
-        marginTop: 5,
+        paddingLeft: 10,
+        paddingRight: 20,
+        paddingTop: 10,
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     btnActions: {
         color: "#2B2733",
-        fontSize: 14,
-        marginRight: 10
+        justifyContent:"center",
+        
     },
     containerBtn: {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "red",
+        
 
     
     },
