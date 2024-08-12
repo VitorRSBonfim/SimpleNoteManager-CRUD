@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
+
 export default function Index() {
 
     const [modalVisible, setModalVisible] = useState<boolean>(false)
