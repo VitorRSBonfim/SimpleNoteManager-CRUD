@@ -104,10 +104,10 @@ export default function Index() {
                     <View style={styles.containerModal} >
                         <View style={{justifyContent: "space-between", alignItems: "flex-start",flexDirection: "row", backgroundColor: "#7A4ED9", paddingTop: 10, paddingLeft: 10, paddingRight: 10, paddingBottom: 10}} >
                             <Text onPress={insertDb}>
-                                <FontAwesome name="check" size={26} color={"white"}></FontAwesome>
+                                <AntDesign name="check" size={26} color={"white"}></AntDesign>
                             </Text>
                             <Text onPress={() => {setModalVisible(false)}}>
-                                <FontAwesome name="close" size={26} color={"white"}></FontAwesome>
+                                <AntDesign name="close" size={26} color={"white"}></AntDesign>
                             </Text>
                         </View>
                         <View style={styles.containernoteInput}>
