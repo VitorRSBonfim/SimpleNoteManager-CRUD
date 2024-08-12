@@ -1,8 +1,9 @@
 
 
-<div>
-  
-</div>
+<h1>
+  Simple Note Manager - React Native
+</h1>
+
 
 
 
