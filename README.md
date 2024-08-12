@@ -4,6 +4,9 @@
   Simple Note Manager - React Native
 </h1>
 
+<p>
+  A simple Note Manager made using React Native, SQLite and ASYNC STORAGE
+</p>
 
 
 
